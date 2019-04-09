@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>未来招新系统</title>
+    <link rel="shortcut icon" th:href="@{/images/favicon.ico}" type="image/x-icon"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/font-awesome-4.7.0/css/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/dist/css/txt.wav.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/index.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/css/set.css}" />
+</head>
+<body>
+<header>
+    <h1>
+        <img th:src="@{/images/top1.png}"/>
+        <span class="txtwav bounce">未来工作室</span>
+    </h1>
+    <ul class="rt_nav">
+        <li>
+            <a th:href="@{/index}" target="_blank" class="website_icon">
+                <i class="fa fa-fire"></i>
+                <span>站点首页</span>
+            </a>
+        </li>
+        <li>
+            <a th:href="@{/toLogin}" class="quit_icon">
+                <i class="fa fa-send"></i>
+                <span>安全退出</span>
+            </a>
+        </li>
+    </ul>
+</header>
+<!--aside nav-->
+<aside class="aside_nav">
+    <!--<h2><a href="">招新步骤</a></h2>-->
+    <ul>
+    	<div class="closeche">
+					<i class="fa fa-caret-right"></i>
+				</div>
+        <li >
+            <a th:href="@{/index}">欢迎登录</a>
+
+        </li>
+        <li>
+            <a th:href="@{/student/findAllStudent}">报名人员</a>
+
+        </li>
+        <li >
+            <a th:href="@{/interview/interview}">正在面试</a>
+        </li>
+        <li >
+            <a th:href="@{/interview/allInterviewResult}">成绩统计</a>
+        </li>
+        <li class="active">
+            <a th:href="@{/scoreItem/findAll}">面试设置</a>
+            <i class="fa fa-angle-double-right"></i>
+        </li>
+        <li >
+            <a th:href="@{/question/findAll}">试题管理</a>
+        </li>
+    </ul>
+</aside>
+<section class="wrap ">
+    <div class="tables" >
+        <section>
+            <h1 class="top-title">面 试 设 置</h1>
+            <!--<div class="search bar7">-->
+                <!--<form th:action="@{/scoreItem/scoreItemId}" method="post">-->
+                    <!--<input type="text" placeholder="请输入打分项"  name="scoreItemId" class="ipt ipt1" />-->
+                    <!--&lt;!&ndash;<input type="text" placeholder="或请输入班级"   name='studentClass' class="ipt ipt2" />&ndash;&gt;-->
+                    <!--&lt;!&ndash;<input type="text" placeholder="或请选择学习方向"  name='direction' class="ipt ipt3" />&ndash;&gt;-->
+                    <!--<button type="submit" class="submit_btn"></button>-->
+                <!--</form>-->
+            <!--</div>-->
+        </section>
+        <div class="setform">
+            <span style="margin-right: 30px">是否开启面试</span>
+            <span class="swith" th:if="${SignUp}">
+                 <i class="off" >关闭</i>
+                 <i class="open on">开启</i>
+            </span>
+            <span class="swith" th:if="!${SignUp}">
+                 <i class="off on" >关闭</i>
+                 <i class="open">开启</i>
+            </span>
+        </div>
+        <div class="setform">
+            <table class="table table-bordered table-hover">
+                <caption>
+                    <span>面试打分项</span>
+                    <span class="plus" id="myBtn"><i class="fa fa-plus"></i></span>
+                </caption>
+                <thead>
+                <tr>
+                    <th>打分项</th>
+                    <th colspan="2">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="scoreItem : ${scoreItems}">
+                    <td th:text="${scoreItem.getScoreName()}" class="zhi"></td>
+                    <td>
+                        <input class="modi" type="button" value="修改">
+                    </td>
+                    <td>
+                        <input class="delete" type="button" value="删除" >
+                        <input type="hidden" class="scoreItemId" th:value="${scoreItem.scoreItemId}">
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="myModal" class="modal">
+
+            <!-- 弹窗内容 -->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="closes">&times;</span>
+                    <h4>添加面试打分项</h4>
+                </div>
+                <div class="modal-body">
+                    <input placeholder="请输入需要的面试打分项" class="write" required />
+                    <!--<div th:each="scoreItem : ${scoreItems}">-->
+                        <!--<input type="hidden"  th:value="${scoreItem.scoreItemId}" class="scoreItemId">-->
+                    <!--</div>-->
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="Sure" value="确认">
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="cure"></div>
+    <!--分页-->
+    <div class="fenye" th:if="${TotalPages > 0}">
+        <ul class="pagination" th:if="${Number == 1} and ${TotalPages > 1}">
+            <!--//如果当前页等于1，总页数大于1（不显示上一页）   Number&ndash;&gt;当前页-->
+                <li><a th:href="@{/scoreItem/findAll(page=1,name=${name})}">首页</a></li>
+            <li class="active" th:each="i:${#numbers.sequence(1,TotalPages)}">
+                <!--//从1到总页数遍历，并赋值给i    TotalPages&ndash;&gt;总页数-->
+                <a th:if="${i > Number-3} and ${i < Number+3} and ${i == Number}" href="javascript:void(0);" th:text="${i}">#</a>
+                <!--//限制显示页数的条数  4到6个页数   而且等于当前页，不能点击-->
+                <a th:if="${i > Number-3} and ${i < Number+3} and ${i != Number}"
+                   th:href="@{/scoreItem/findAll(page=${i},name=${name})}" th:text="${i}"
+                   style="color: #337ab7;background-color: #fff;border-color: #fff;">#</a><!--//限制显示页数的条数  4到6个页数-->
+            </li>
+            <li><a th:href="@{/scoreItem/findAll(page=${Number+1},name=${name})}">下一页</a></li><!--//请求页数+1-->
+        </ul>
+
+        <ul class="pagination" th:if="${Number > 1} and ${TotalPages > 1}"><!--//显示上一页-->
+            <li><a th:href="@{/scoreItem/findAll(page=1,name=${name})}">首页</a></li><!--//跳转至第一页-->
+            <li><a th:href="@{/scoreItem/findAll(page=${Number-1},name=${name})}">上一页</a></li><!--//请求页数-1-->
+            <li class="active" th:each="i:${#numbers.sequence(1,TotalPages)}">
+                <!--//从1到总页数遍历，并赋值给i    TotalPages&ndash;&gt;总页数-->
+                <a th:if="${i > Number-3} and ${i < Number+3} and ${i == Number}" href="javascript:void(0);" th:text="${i}">#</a>
+                <!--//限制显示页数的条数  4到6个页数   而且等于当前页，不能点击-->
+                <a th:if="${i > Number-3} and ${i < Number+3} and ${i != Number}"
+                   th:href="@{/scoreItem/findAll(page=${i},name=${name})}" th:text="${i}"
+                   style="color: #337ab7;background-color: #fff;border-color: #fff;">#</a><!--//限制显示页数的条数  4到6个页数-->
+            </li>
+            <li th:if="${Number != TotalPages}"><a
+                    th:href="@{/scoreItem/findAll(page=${Number+1},name=${name})}">下一页</a></li><!--//请求页数+1-->
+            <li><a th:href="@{/scoreItem/findAll(page=${TotalPages},name=${name})}">尾页</a></li><!--//跳转至第Number页-->
+        </ul>
+
+    </div>
+</section>
+</body>
+<script th:src="@{/js/jquery-2.1.0.js}"></script>
+<script th:src="@{/dist/js/txt.wav.min.js}"></script>
+<script th:src="@{/js/set.js}"></script>
+<script type="text/javascript">
+		$(function() {
+			//确定文档高度
+			var winheight = $(window).height();
+			winheight -= 70;
+			$('.wrap').css('height', winheight);
+            //点击缩回
+            $('.closeche').on('click',function(){
+            	if($('.aside_nav').css('left')=='0px'){
+            		$('.aside_nav').css('left','-210px');
+            		$('.wrap').css({'width':'95%','margin-left':'40px'});
+            	}else{
+            		$('.aside_nav').css('left','0px');
+            		$('.wrap').css({'width':'','margin-left':'258px'})
+            	}
+            	
+            })
+            
+		});
+	</script>
+</html>
